@@ -124,6 +124,27 @@ final class EtherscanClientTest extends TestCase
         $this->client(new FakeHttpClient(unreachable: true))->transactions(self::ADDRESS);
     }
 
+    public function testAnUnreachableApiIsLoggedAsAWarningNotAnError(): void
+    {
+        $logger = new class extends AbstractLogger {
+            public string $levels = '';
+
+            public function log($level, string|Stringable $message, array $context = []): void
+            {
+                if (\is_string($level) && 'debug' !== $level) {
+                    $this->levels .= $level . ';';
+                }
+            }
+        };
+
+        try {
+            (new EtherscanClient(new FakeHttpClient(unreachable: true), new Psr17Factory(), self::KEY, 1, logger: $logger))->transactions(self::ADDRESS);
+            self::fail('An unreachable API must throw.');
+        } catch (EtherscanException) {
+            self::assertSame('warning;', $logger->levels);
+        }
+    }
+
     public function testTheKeyNeverReachesTheLog(): void
     {
         $logger = new class extends AbstractLogger {

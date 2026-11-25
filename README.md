@@ -13,6 +13,7 @@ An archive-grade view of an address is what a pruned or proxied JSON-RPC node ca
 - **Etherscan API V2** — one key for every supported chain; the chain is an explicit constructor argument (`chainid`).
 - **Three address histories** — `transactions()` (`txlist`), `tokenTransfers()` (`tokentx`, filtered by token contract) and `internalTransactions()` (`txlistinternal`).
 - **Typed Value Objects** — `Transaction`, `TokenTransfer`, `InternalTransaction`; addresses and hashes lower-cased, amounts as decimal strings in the smallest unit (wei / token units), safe past `PHP_INT_MAX`.
+- **Log levels** — an unreachable API (the PSR-18 client threw: timeout, refused or dropped connection) is a `warning`, it usually passes on the next call; a body that is not JSON or a refused request stays louder. The exception thrown is the same either way.
 - **Typed failures** — `EtherscanRateLimitException` (over the key's rate limit), `EtherscanConfigurationException` (missing or refused key), `EtherscanException` (any other API error, an unreachable API, a body that is not JSON, a malformed row). "No transactions found" is an empty list, not an error.
 - **Bounded queries** — `AddressHistoryQuery` validates the block range, page and page size (1–10 000) before a request is made.
 - **The API key never reaches the log** — PSR-3 debug lines carry the action, chain, address and range only.

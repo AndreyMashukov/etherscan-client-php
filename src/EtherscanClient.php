@@ -65,7 +65,7 @@ final readonly class EtherscanClient implements EtherscanClientInterface
             $response = $this->http->sendRequest($this->requestFactory->createRequest('GET', $url));
         } catch (ClientExceptionInterface $exception) {
             $failure = new EtherscanException(sprintf('Etherscan %s could not be reached: %s', $action, $exception::class), 0, $exception);
-            $this->logger->error('Etherscan request failed', $context + ['exception' => $failure]);
+            $this->logger->warning('Etherscan request failed', $context + ['exception' => $failure]);
 
             throw $failure;
         }
